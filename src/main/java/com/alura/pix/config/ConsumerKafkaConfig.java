@@ -23,6 +23,29 @@ public class ConsumerKafkaConfig {
     private String bootstrapAddress;
 
     @Bean
+    public ProducerFactory<String, PixDTO> producerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        //Qual kafka estamos a acessar
+        configProps.put(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                bootstrapAddress);
+        //definirt serializacao da chave, que nessa caso é uma string
+        configProps.put(
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                StringSerializer.class);
+        //defindno calor que vais er um json
+        configProps.put(
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, PixDTO> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
     public ConsumerFactory<String, PixDTO> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(
@@ -41,9 +64,9 @@ public class ConsumerKafkaConfig {
         props.put(
                 ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(
-                ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, false);
+                ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, true);
         props.put(
-                ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+                ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
 
         return new DefaultKafkaConsumerFactory<>(props);
     }
