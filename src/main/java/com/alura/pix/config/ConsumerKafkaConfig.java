@@ -35,14 +35,22 @@ public class ConsumerKafkaConfig {
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 JsonDeserializer.class);
         props.put(
-                JsonDeserializer.TRUSTED_PACKAGES,
-                "*");
+                JsonDeserializer.TRUSTED_PACKAGES, "*");
+        props.put(
+                ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100);
+        props.put(
+                ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(
+                ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, false);
+        props.put(
+                ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, PixDTO>
-        kafkaListenerContainerFactory() {
+    kafkaListenerContainerFactory() {
 
         ConcurrentKafkaListenerContainerFactory<String, PixDTO> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();

@@ -8,6 +8,7 @@ import com.alura.pix.repository.KeyRepository;
 import com.alura.pix.repository.PixRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,8 +20,9 @@ public class PixValidator {
     @Autowired
     private PixRepository pixRepository;
 
-    @KafkaListener(topics = "pix_topic", groupId = "grupo-1")
-    public void processaPix(PixDTO pixDTO) {
+    @KafkaListener(topics = "pix-topic-partitions", groupId = "grupo")
+    public void processaPix(PixDTO pixDTO, Acknowledgment acknowledgment) {
+        acknowledgment.acknowledge();
         System.out.println("Pix recebido:" + pixDTO.getIdentifier());
 
         Pix pix = pixRepository.findByIdentifier(pixDTO.getIdentifier());
