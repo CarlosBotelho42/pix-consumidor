@@ -68,6 +68,10 @@ public class ConsumerKafkaConfig {
         props.put(
                 ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
 
+        props.put(
+                "schema.resgistry.url",
+                "http://localhost:8081");
+
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
